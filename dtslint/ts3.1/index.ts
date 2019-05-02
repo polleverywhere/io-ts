@@ -1,4 +1,7 @@
 import * as t from '../../src'
+import { either } from 'fp-ts/lib/Either'
+
+const chain = either.chain
 
 //
 // helpers
@@ -17,7 +20,7 @@ export const NumberFromString = new t.Type<number, string, unknown>(
   'NumberFromString',
   t.number.is,
   (u, c) =>
-    t.string.validate(u, c).chain(s => {
+    chain(t.string.validate(u, c), s => {
       const n = parseFloat(s)
       return isNaN(n) ? t.failure(s, c) : t.success(n)
     }),

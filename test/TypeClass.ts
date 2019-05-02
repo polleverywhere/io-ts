@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as t from '../src/index'
 import { assertSuccess, assertFailure } from './helpers'
-import { right, Either } from 'fp-ts/lib/Either'
+import { right, Either, isRight } from 'fp-ts/lib/Either'
 
 const BAA = new t.Type<number, string, string>(
   'BAA',
@@ -27,7 +27,7 @@ describe('Type', () => {
     }
 
     const T = t.string
-    const decode = <L, A>(f: (u: unknown) => Either<L, A>, u: unknown): boolean => f(u).isRight()
+    const decode = <L, A>(f: (u: unknown) => Either<L, A>, u: unknown): boolean => isRight(f(u))
     assert.strictEqual(decode(T.decode, 'a'), true)
     assert.strictEqual(decode(clone(T).decode, 'a'), true)
     type A = {
