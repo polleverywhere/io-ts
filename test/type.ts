@@ -79,6 +79,23 @@ describe('type', () => {
     })
   })
 
+  describe('map', () => {
+    it('returns a mapped decoder', () => {
+      const T = t.type({ a: t.string, b: t.number })
+      const T2 = T.map(({ a, b }) => ({ name: a, number: b }))
+      const T3 = T2.map(({ number }) => ({ positive: number, negative: -1 * number }))
+
+      assert.deepStrictEqual(
+        T2.decode({ a: 'ok', b: 123 }).value,
+        { name: 'ok', number: 123 }
+      )
+      assert.deepStrictEqual(
+        T3.decode({ a: 'ok', b: 123 }).value,
+        { positive: 123, negative: -123 }
+      )
+    })
+  })
+
   it('should keep unknown properties', () => {
     const T = t.type({ a: t.string })
     const validation = T.decode({ a: 's', b: 1 })

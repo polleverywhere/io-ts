@@ -99,6 +99,8 @@ export interface Encoder<A, O> {
   readonly encode: Encode<A, O>
 }
 
+export const assertIs = <T>(_x: any): _x is T => true
+
 /**
  * @since 1.0.0
  */
@@ -145,7 +147,22 @@ export class Type<A, O = A, I = unknown> implements Decoder<I, A>, Encoder<A, O>
   }
   /** a version of `validate` with a default context */
   decode(i: I): Validation<A> {
-    return this.validate(i, [{ key: '', type: this, actual: i }])
+    return this.validate(i, [ { key: '', type: this, actual: i } ])
+  }
+
+  map<B>(
+    this: Type<A, O, I>,
+    func: (val: A) => B,
+    name: string = `map(${this.name}, ${func})`
+  ): Type<B, O, I> {
+    return this.pipe(
+      new Type<B, A, A>(
+        name,
+        assertIs,
+        (i, _c) => success(func(i)),
+        x => x as unknown as A
+      )
+    )
   }
 }
 

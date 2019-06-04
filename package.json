@@ -3,6 +3,7 @@
   "version": "1.8.6",
   "description": "TypeScript compatible runtime type system for IO validation",
   "files": [
+    "src",
     "lib",
     "es6"
   ],
